@@ -72,7 +72,7 @@ This will install the CLI for you on OSX. For other Linux types, just apt/yum th
 ### Authenticate through the Azure CLI
 
     ```
-   ./manageAzure.py login
+    ./manageAzure.py login
     ```
 
 This step will show you how to login to the Azure CLI. You will have to open a browser and confirm with the code
