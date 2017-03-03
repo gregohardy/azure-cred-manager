@@ -61,14 +61,15 @@ the Azure CLI and python3.
     ```
 ## Setup
 
-- Install tools.
+### Install tools.
+
     ```
     ./manageAzure.py install
     ```
 
 This will install the CLI for you on OSX. For other Linux types, just apt/yum the azure-cli package.
 
-- Authenticate through the Azure CLI
+### Authenticate through the Azure CLI
 
     ```
    ./manageAzure.py login
@@ -78,14 +79,12 @@ This step will show you how to login to the Azure CLI. You will have to open a b
 that is displayed in this step. This is Azure specific and not part of this module. You should only have to log
 in once. Thankfully.
 
-## Using the module
-
-- Creating a Service Principal
+### Creating a Service Principal
 
 This will generate a set of credentials you can use for this application/ServicePrincipal with the ARM SDK through the Azure CLI.
 
     ```
-   ./manageAzure.py create -n <name of the application to create> -b <A base name string for the SP> -p <a password for the applicaiton>
+   ./manageAzure.py create -n app name -b sp base name -p password for the application
     ````
 
 Example :
@@ -101,7 +100,7 @@ Example :
 
 The password is for the application, NOT your azure login. DO NOT use that. The passwords are not protected.
 
-- Show credentials
+### Show credentials
 
 To show your credentials, listed by application name for use with the Azure SDK :
 
@@ -126,7 +125,7 @@ Example:
                    'AZURE_TENANT_ID': 'yyy'}}
     ```
 
-- Deleting
+### Deleting
 
 To delete an Application/ServicePrincipal/Role.
 
@@ -148,7 +147,7 @@ Example:
     Deleting application [testapplication1] credentials
     ```
 
-- List Service Principals/Applications
+### List Service Principals/Applications
 
 The manager can show you your current Application or Service Principals for the current user, or display
 all of the elements for this subscri:
