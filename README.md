@@ -84,13 +84,13 @@ in once. Thankfully.
 This will generate a set of credentials you can use for this application/ServicePrincipal with the ARM SDK through the Azure CLI.
 
     ```
-   ./manageAzure.py create -n app name -b sp base name -p password for the application
-    ````
+    ./manageAzure.py create -n app name -b sp base name -p password for the application
+    ```
 
 Example :
 
     ```
-   ./manageAzure.py create -n testapp1 -b testapp -p 4321mypass!
+    ./manageAzure.py create -n testapp1 -b testapp -p 4321mypass!
     Creating an application for [testapplication1]
     Creating a service principal for [testapplication1]
     Creating a role assignment for [testapplication1]
@@ -181,7 +181,7 @@ Example:
 
 Displays all Service Principals for this subscription.
 
-      ```
+    ```
     ./manageAzure.py list sps
     ```
 
