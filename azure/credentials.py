@@ -20,7 +20,7 @@ def azure_cli_installed(agent):
 
 def azure_login(agent):
     try:
-        agent.shell("azure location list 2>&1 > /dev/null")
+        agent.shell("az location list 2>&1 > /dev/null")
         print("Azure CLI login verified")
     except Exception as e:
         print("It appears that you are not logged into the azure cli...")
@@ -29,8 +29,8 @@ def azure_login(agent):
         sys.exit(2)
 
 def azure_set_account(agent):
-    print(agent.shell("azure account list"))
-    ret = agent.shell("azure account list --json")
+    print(agent.shell("az account list"))
+    ret = agent.shell("az account list --output json")
     accounts = json.loads(ret)
     sub_id = None
     while not sub_id:
@@ -40,7 +40,7 @@ def azure_set_account(agent):
                 sub_id = input_id
 
     print("Using subscription [{0}]".format(sub_id))
-    agent.shell("azure account set {0}".format(sub_id))
+    agent.shell("az account set {0}".format(sub_id))
     return sub_id
 
 
@@ -50,7 +50,7 @@ def azure_create_app(agent,
                      identifier, # "https://test.com"
                      password):
 
-    agent.shell("azure ad app create -n {0} --home-page {1} --identifier-uris {2} -p {3}".format(name,
+    agent.shell("az ad app create -n {0} --home-page {1} --identifier-uris {2} -p {3}".format(name,
                                                                                                  homepage,
                                                                                                  identifier,
                                                                                                  password))
@@ -64,22 +64,22 @@ def config_get_app_list(agent):
     return user_apps
 
 def azure_get_user(agent):
-    account = json.loads(agent.shell("azure account show --json"))[0]
+    account = json.loads(agent.shell("az account show --output json"))[0]
     return account['user']['name']
 
 
 def azure_get_tenant_id(agent):
-    account = json.loads(agent.shell("azure account show --json"))[0]
+    account = json.loads(agent.shell("az account show --output json"))[0]
     return account['tenantId']
 
 def azure_get_subscription_id(agent):
-    account = json.loads(agent.shell("azure account show --json"))[0]
+    account = json.loads(agent.shell("az account show --output json"))[0]
     return account['id']
 
 
 def get_azure_config_file_name(agent):
-    account = json.loads(agent.shell("azure account show --json"))[0]
-    return "azure.{0}_{1}.conf".format(account['user']['name'], account['name'])
+    account = json.loads(agent.shell("az account show --output json"))[0]
+    return "az.{0}_{1}.conf".format(account['user']['name'], account['name'])
 
 
 def save_config(creds_dict, agent):
@@ -110,33 +110,33 @@ def load_config(agent):
     return json.loads(data)
 
 def azure_get_user_name(agent):
-    account = json.loads(agent.shell("azure account show --json"))[0]
+    account = json.loads(agent.shell("az account show --output json"))[0]
     return account['name']
 
 def azure_show_service_principals(agent):
     sps = []
     apps = config_get_app_list(agent)
     for app_name in apps:
-        sps.append(json.loads(agent.shell("azure ad sp show --search {0} --json".format(app_name)))[0])
+        sps.append(json.loads(agent.shell("az ad sp show --id {0} --output json".format(app_name)))[0])
     return sps
 
 def azure_show_apps(agent):
     applications = []
     apps = config_get_app_list(agent)
     for app_name in apps:
-        applications.append(json.loads(agent.shell("azure ad app show --search {0} --json".format(app_name)))[0])
+        applications.append(json.loads(agent.shell("az ad app show --id {0} --output json".format(app_name)))[0])
     return applications
 
 def azure_get_service_principals(agent):
-    return json.loads(agent.shell("azure ad sp list --json"))
+    return json.loads(agent.shell("az ad sp list --output json"))
 
 def azure_get_apps(agent):
-    return json.loads(agent.shell("azure ad app list --json"))
+    return json.loads(agent.shell("az ad app list --output json"))
 
 def azure_get_role_assignment(agent, object_id):
     try:
         return json.loads(
-            agent.shell("azure role assignment list --objectId {0} --json".format(object_id)))[0]
+            agent.shell("az role assignment list --objectId {0} --output json".format(object_id)))[0]
     except:
         return None
 
@@ -159,7 +159,7 @@ def azure_get_service_principal(agent, key, value):
 
 def azure_create_service_principal(agent, name):
     app = azure_get_application(agent, 'displayName', name)
-    agent.shell("azure ad sp create -a {0}".format(app['appId']))
+    agent.shell("az ad sp create -a {0}".format(app['appId']))
     return azure_get_service_principal(agent, 'displayName', name)
 
 def azure_delete_service_principal(agent, obj_id):
@@ -167,7 +167,7 @@ def azure_delete_service_principal(agent, obj_id):
 
 
 def azure_create_role_assignment(agent, obj_id, sub_id):
-    agent.shell("azure role assignment create --objectId {0} -o Reader -c /subscriptions/{1}".format(obj_id, sub_id))
+    agent.shell("az role assignment create --objectId {0} -o Reader -c /subscriptions/{1}".format(obj_id, sub_id))
     return azure_get_role_assignment(agent, obj_id)
 
 
@@ -202,9 +202,8 @@ def create_cred_elements(agent, app_name, app_hostname, subscription_id, passwor
 
     print("Created role [{0}] for application [{1}]".format(role['properties']['roleName'], app_name))
 
-    # if 'Contributor' not in role['properties']['roleName']:
-    #     sys.exit("Error: The service principal role is not set to contributor [{0}]".format(
-    #         role['properties']['roleName']))
+    if 'Contributor' not in role['properties']['roleName']:
+        sys.exit("Error: The service principal role is not set to contributor [{0}]".format(role['properties']['roleName']))
 
     return get_arm_creds(agent, app_name, subscription_id, password)
 
@@ -244,7 +243,7 @@ def azure_delete_cred_elements(agent, app_name):
         app = azure_get_application(agent, 'displayName', app_name)
         if app:
             print("Removing application due to missing service principal for [{0}]".format(app_name))
-            agent.shell("azure ad app delete --objectId {0}".format(app['objectId']))
+            agent.shell("az ad app delete --objectId {0}".format(app['objectId']))
 
     creds = load_config(agent)
     try:
