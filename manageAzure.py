@@ -1,9 +1,9 @@
 #!/usr/local/bin/python3
 
-from azure.credentials import azure_cli_installed, azure_login, azure_set_account, azure_get_apps
-from azure.credentials import azure_get_subscription_id, save_config, load_config, azure_delete_cred_elements
-from azure.credentials import create_cred_elements, azure_show_service_principals, azure_show_apps
-from azure.credentials import azure_get_service_principals
+from manager.credentials import azure_login, azure_set_account, azure_get_apps
+from manager.credentials import azure_get_subscription_id, save_config, load_config, azure_delete_cred_elements
+from manager.credentials import create_cred_elements, azure_show_service_principals, azure_show_apps
+from manager.credentials import azure_get_service_principals
 from cement.core.foundation import CementApp
 from cement.core.controller import CementBaseController, expose
 from osagent.core import OSAgent
@@ -29,22 +29,23 @@ class ListController(CementBaseController):
         if self.app.pargs.all:
             self.app.log.info("Show All Service Principals for the account")
             os_agent = OSAgent()
-            pprint(azure_get_service_principals(os_agent), indent=4)
+            pprint(azure_get_service_principals(os_agent), indent=2)
         else:
             self.app.log.info("Show Service Principals for this user")
             os_agent = OSAgent()
-            pprint(azure_show_service_principals(os_agent), indent=4)
+            pprint(azure_show_service_principals(os_agent), indent=2)
 
     @expose(help="Show applications")
     def apps(self):
         if self.app.pargs.all:
             self.app.log.info("Show All Applications for the Account")
             os_agent = OSAgent()
-            pprint(azure_get_apps(os_agent), indent=4)
+            pprint(azure_get_apps(os_agent), indent=2)
         else:
             self.app.log.info("Show Applications owned by this User")
             os_agent = OSAgent()
-            pprint(azure_show_apps(os_agent), indent=4)
+            apps = azure_show_apps(os_agent)
+            pprint(apps, indent=2)
 
 
 class AzureCredController(CementBaseController):
@@ -72,7 +73,10 @@ class AzureCredController(CementBaseController):
             print("Creds have not been created for this subscription. Please run the create step")
         else:
             print("\nYour current Azure Credentials:")
-            pprint(creds, indent=4)
+            for app, crds in creds.items():
+                print("APP : ", app)
+                for k, v in crds.items():
+                    print("export {0}={1}".format(k,v))
 
     @expose(help="Create Azure Application/Service Principal and add a role for this subscription")
     def create(self):
@@ -101,12 +105,6 @@ class AzureCredController(CementBaseController):
             print("-n|--app_name <name> must be specified for delete")
         else:
             azure_delete_cred_elements(os_agent, app.pargs.app_name)
-
-    @expose(help="Install or Update the Azure CLI")
-    def install(self):
-        self.app.log.info("Installing the azure CLI")
-        os_agent = OSAgent()
-        azure_cli_installed(os_agent)
 
     @expose(help="Set the Azure Subscription to use and login to the Azure CLI")
     def login(self):

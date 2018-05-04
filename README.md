@@ -15,6 +15,14 @@ At present it is setup in the install step to use brew, ergo its OSX at present 
 step, but if you dont mind installing the Azure CLI, this tool is for you on any linux that supports
 the Azure CLI and python3.
 
+## Installation
+
+```
+virtualenv .
+source bin/activate
+pip3 install -r requirements
+```
+
 ## Usage
 
     ```
@@ -33,9 +41,6 @@ the Azure CLI and python3.
 
       delete
         Delete Azure Application/Service Principal and add a role for this subscription
-
-      install
-        Install or Update the Azure CLI
 
       list
         List azure elements [sp|app]
@@ -59,15 +64,7 @@ the Azure CLI and python3.
                             the basename for the URI and identifier for the app to
                             create
     ```
-## Setup
-
-### Install tools.
-
-    ```
-    ./manageAzure.py install
-    ```
-
-This will install the CLI for you on OSX. For other Linux types, just apt/yum the azure-cli package.
+## First Steps
 
 ### Authenticate through the Azure CLI
 
@@ -94,7 +91,7 @@ Example :
     Creating an application for [testapplication1]
     Creating a service principal for [testapplication1]
     Creating a role assignment for [testapplication1]
-    Created role [Reader] for application [testapplication1]
+    Created role [Contributor] for application [testapplication1]
     Now saving the credentials
     ```
 
@@ -115,14 +112,11 @@ Example:
     INFO: Show your current credentials
 
     Your current Azure Credentials:
-    {   'app1': {  'AZURE_CLIENT_ID': 'xxx',
-                   'AZURE_CLIENT_SECRET': 'xxx',
-                   'AZURE_SUBSCRIPTION_ID': 'xxx',
-                   'AZURE_TENANT_ID': 'xxx'},
-        'app2': {  'AZURE_CLIENT_ID': 'yyy',
-                   'AZURE_CLIENT_SECRET': 'yyy',
-                   'AZURE_SUBSCRIPTION_ID': 'yyy',
-                   'AZURE_TENANT_ID': 'yyy'}}
+    APP :  basegregapp
+    export AZURE_SUBSCRIPTION_ID=xxxx
+    export AZURE_TENANT_ID=xxxx
+    export AZURE_CLIENT_ID=xxxx
+    export AZURE_CLIENT_SECRET=xxxx
     ```
 
 ### Deleting
