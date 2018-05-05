@@ -1,3 +1,4 @@
 azure-cli
+cement
 colorlog
 boto3
