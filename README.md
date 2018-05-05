@@ -2,18 +2,15 @@
 A tool to manage your subscription through the Azure CLI.
 
 Its not rocket science, but I found the whole process of finding out your creds when you
-created an application as mildy terrible in Azure. Having to discover your tennant id through 
-the URI of the console was unpleasant (I know this will/has changed)
+created an application as mildy terrible in Azure. 
 
 This tool enables you to track and create these for your account. Hopefully its simple and easy to use.
 
 It tracks and manages your Applications and Service Principals, and makes creating and 
-maintaining them simple. Its easy to lose track of what your currently SP struture looks like.
+maintaining them simple. Its easy to lose track of what your currently SP structure looks like.
 You can remove old or unused SP's.
 
-At present it is setup in the install step to use brew, ergo its OSX at present for the install
-step, but if you dont mind installing the Azure CLI, this tool is for you on any linux that supports
-the Azure CLI and python3.
+I'm suggesting you use virtualenv to separate your dependencies from the host environment.
 
 ## Installation
 
