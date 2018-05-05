@@ -20,7 +20,7 @@ the Azure CLI and python3.
 ```
 virtualenv .
 source bin/activate
-pip3 install -r requirements
+pip3 install -r requirements.txt
 ```
 
 ## Usage
